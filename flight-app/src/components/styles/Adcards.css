@@ -1,0 +1,17 @@
+.card-bod{
+    background-color: #F5F5F5;
+    border:none;
+    text-align: left;
+}
+.cardd{
+    width: 18rem;
+    border: none;
+    background-color: #F5F5F5;
+}
+.card-img{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    /* margin-top: 20px; */
+}
+
