@@ -35,7 +35,7 @@ function Reservation() {
     // Retrieve user data from local storage or any other source
     const storedEmail = localStorage.getItem('userEmail');
     const storedPassword = localStorage.getItem('userPassword');
-    console.log(storedEmail+" "+storedPassword);
+    console.log(storedEmail+" stored "+storedPassword);
     return email === storedEmail && password === storedPassword;
   };
 
@@ -44,8 +44,8 @@ function Reservation() {
 
     const { email, password,name } = passengerDetails;
     const storeName = localStorage.setItem('userName', passengerDetails.name)
-
-    console.log(storeName);
+    
+    // console.log(email+" "+password);
     if (validateUser(email, password)) {
       // Redirect to UserProfile page
         window.location.href="/flightdet"

@@ -58,7 +58,7 @@ function App() {
       <Route path="/billing" element={<BillingSection/>}/>
       <Route path="/search/resflightlist" element={<Reserveflight/>}/>
       {/* <Route path="/userdetail" element={<UserDetail/>}/> */}
-      <Route path="/profile" element={<UserDetails/>}/>
+      <Route path="/profile/:email" element={<UserDetails/>}/>
       <Route path="/flightdet" element={<Displayuser/>}/>
       <Route path="/landing" element={<LandingPage/>}/>
     </Routes>

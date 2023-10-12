@@ -20,9 +20,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function Signup() {
   const [formData, setFormData] = useState({
-    name:'',
-    email: '',
-    password: '',
+    userName:'',
+    userEmail: '',
+    userPassword: '',
     confirmPassword: '',
   });
   
@@ -30,22 +30,57 @@ function Signup() {
     // Implement signup logic here, e.g., send data to the server
     // and handle success/failure accordingly
     // After successful signup, you can redirect to the login page
-     localStorage.setItem('userEmail', formData.email);
-    localStorage.setItem('userPassword', formData.password);
-    toast.success('Sign up successful!', {
-      position: 'top-right',
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    });
-    setTimeout(()=>{
-      window.location.href = '/login';
-    },3000);
-    
+    localStorage.setItem('userEmail', formData.userEmail);
+    localStorage.setItem('userPassword', formData.userPassword);
+    const userData = {
+      userName: formData.userName,
+      userEmail: formData.userEmail,
+      userPassword: formData.userPassword,
+    };
+     console.log(userData);
+    // Make a POST request to the server to save the user data
+    fetch('http://localhost:8080/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          // User data was successfully saved
+          localStorage.setItem('userEmail', formData.userEmail);
+          localStorage.setItem('userPassword', formData.userPassword);
+          toast.success('Sign up successful!', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 3000);
+        } else {
+          // Handle error if the server request fails
+          toast.error('Sign up failed. Please try again later.', {
+            position: 'top-right',
+            autoClose: 3000,  
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'light',
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   const handleInputChange = (event) => {
@@ -115,7 +150,7 @@ function Signup() {
                     <Typography variant="h5" component="div" className="text-center">
                       Sign Up
                     </Typography>
-                    <form onSubmit={handleSubmit}>
+                    <form  noValidate autoComplete="off" onSubmit={handleSubmit}>
                     <TextField
                         label="Name"
                         fullWidth
@@ -124,9 +159,9 @@ function Signup() {
                         variant="outlined"
                         margin="normal"
                         className="mb-3"
-                        name="name"
+                        name="userName"
                         required
-                        value={formData.name}
+                        value={formData.userName}
                         onChange={handleInputChange}
                       />
                       <TextField
@@ -137,8 +172,8 @@ function Signup() {
                         variant="outlined"
                         margin="normal"
                         className="mb-3"
-                        name="email"
-                        value={formData.email}
+                        name="userEmail"
+                        value={formData.userEmail}
                         required
                         onChange={handleInputChange}
                       />
@@ -149,8 +184,8 @@ function Signup() {
                         placeholder="Password"
                         variant="outlined"
                         margin="normal"
-                        name="password"
-                        value={formData.password}
+                        name="userPassword"
+                        value={formData.userPassword}
                         required
                         onChange={handleInputChange}
                       />

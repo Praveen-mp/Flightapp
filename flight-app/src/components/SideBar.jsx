@@ -69,6 +69,7 @@ function Header() {
     {text:'Profile',link:'/profile'},
     { text: 'About', link: '/about' },
     
+    
   ];
 
   const handleDrawerToggle = () => {
@@ -87,6 +88,11 @@ function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout=()=>{
+    localStorage.removeItem('token');
+    window.location.href="/";
+}
 
   return (
     <div className={classes.root}>
@@ -126,6 +132,9 @@ function Header() {
             <Button className={classes.button} onClick={()=>window.location.href="/login"}>
               Log in
             </Button>
+            <Button className={classes.button} onClick={handleLogout}>
+              Logout
+            </Button>
           </div>
           {mobileOpen && (
             <>
@@ -156,6 +165,7 @@ function Header() {
                   </MenuItem>
                 ))}
                 <MenuItem onClick={()=>window.location.href="/login"}>Log in</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
           )}

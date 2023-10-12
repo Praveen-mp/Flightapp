@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Container,
   Grid,
@@ -8,14 +9,10 @@ import {
   Typography,
 } from '@mui/material';
 import Header from './Header';
-import adc2 from '../images/Air2.jpg';
-import adc1 from '../images/Air1.avif';
-import adc3 from '../images/Air3.avif';
 import '../components/styles/Flightlist.css';
 import { makeStyles } from '@mui/styles';
-import Carousels from './Carousels';
 import Footer from './Footer';
-
+import air1 from '../images/Air1.avif';
 const useStyles = makeStyles((theme) => ({
   card: {
     display: 'flex',
@@ -47,7 +44,7 @@ const PromotionalCard = ({ imgSrc, title, text }) => {
         <Button
           variant="contained"
           color="primary"
-          sx={{marginBottom:'10px'}}
+          sx={{ marginBottom: '10px' }}
           onClick={() => window.location.href = "/flightlist/seats"}
         >
           Book a seat
@@ -57,40 +54,52 @@ const PromotionalCard = ({ imgSrc, title, text }) => {
   );
 };
 
-const FlightList = () => {
-  // Flight data remains the same
-};
-
-const Home = () => (
-  <div>
-    <Header />
+const FlightList = ({ flightData }) => {
+  return (
     <Container className='mt-4 pt-3 px-0' style={{ backgroundColor: '#F5F5F5' }}>
       <Grid container spacing={3}>
-        <PromotionalCard
-          imgSrc={adc1}
-          title="Express Airlines"
-          text="It's free! And you can start earning from your very first flight with us or any of our airline partners."
-        />
-        <PromotionalCard
-          imgSrc={adc2}
-          title="Air India"
-          text="It's free! And you can start earning from your very first flight with us or any of our airline partners."
-        />
-        <PromotionalCard
-          imgSrc={adc3}
-          title="Singapore Airlines"
-          text="It's free! And you can start earning from your very first flight with us or any of our airline partners."
-        />
+        {flightData.map((flight, index) => (
+          <PromotionalCard
+            key={index}
+            imgSrc={flight.image}
+            title={flight.airline}
+            text="It's free! And you can start earning from your very first flight with us or any of our airline partners."
+          />
+        ))}
       </Grid>
     </Container>
-    {/* Include your FlightList component here */}
-    <Grid sx={{marginTop:'100px'}}>
-      <Grid>
-        <Footer/>
+  );
+};
+
+const Home = () => {
+  const [flightData, setFlightData] = useState([]);
+
+  useEffect(() => {
+    // Make an API request to your Spring Boot backend to get flight data
+    axios.get('http://localhost:8080/allFlight')
+      .then((response) => {
+        // Update the flightData state with the response data
+        console.log(response);
+        setFlightData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching flight data:', error);
+      });
+  }, []);
+
+  return (
+    <div>
+      <Header />
+      {/* Render the FlightList component with the flight data */}
+      <FlightList flightData={flightData} />
+      <FlightList flightData={flightData} />
+      <Grid sx={{ marginTop: '100px' }}>
+        <Grid>
+          <Footer />
+        </Grid>
       </Grid>
-    </Grid>
-    
-  </div>
-);
+    </div>
+  );
+};
 
 export default Home;

@@ -23,69 +23,69 @@ import GoogleIcon from '@mui/icons-material/Google';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/actions/userAction';
-
+import { login } from '../services/Api';
+import axios from 'axios'
 function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
-  const dispatch = useDispatch();
+  const url="http://localhost:8080"
+  const handleLogin = async(event) => {
+    event.preventDefault();
+    const userData={
+      userEmail:formData.email,
+      userPassword:formData.password
+    }
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    axios.post(`${url}/login`, userData, { headers })
+   .then(response => {
+    // Handle the response
+    console.log('Response Status:', response.status);
+    console.log('Response Data:', response.data);
+    localStorage.setItem('token',response.data.token);
+    toast.success('Sign in successful!', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
+    setTimeout(() => {
+      window.location.href="/landing";
+    }, 3000);
+    
+    console.log('Response Headers:', response.headers);
+  })
+  .catch(error => {
+    // Handle the error
 
-  const handleLogin = () => {
-    // Perform authentication logic here (e.g., validate credentials with a server)
-    // If authentication is successful, dispatch the loginSuccess action
-    // Otherwise, display an error message
-   
-      const { email, password } = formData;
+
+    toast.error('Invalid email or password!', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    });
     
-      // Retrieve user registration details from localStorage
-      const storedEmail = localStorage.getItem('userEmail');
-      const storedPassword = localStorage.getItem('userPassword');
-    
-      // Check if user data is found in localStorage
-      if (storedEmail && storedPassword) {
-        // Validate login credentials against stored data
-        console.log(storedEmail+" "+storedPassword);
-        if (email === storedEmail && password === storedPassword) {
-          const user = { email,password }; // You can include more user data here
-          dispatch(loginSuccess(user));
-          // Redirect to the home page or another route
-          toast.success('Successfully logged in', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progressTheme: 'light',
-          });
-          window.location.href = '/landing';
-        } else {
-          // Display an error message for invalid credentials
-          toast.error('Invalid email or password. Please try again.', {
-            position: 'top-right',
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progressTheme: 'light',
-          });
-        }
-      } else {
-        // Display an error message if user data is not found in localStorage
-        toast.error('User data not found. Please sign up first.', {
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progressTheme: 'light',
-        });
-      }
-  };
+
+    console.error('Axios Error:', error);
+  });
+    };
+
+
+  // validation
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -95,11 +95,7 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin();
-  };
-
+ 
   return (
     <div className="log-det d-flex justify-content-center align-items-center vh-100">
       <Container component="main" maxWidth="lg">
@@ -153,7 +149,10 @@ function Login() {
                     <Typography variant="h5" component="div" className="text-center">
                       Sign In
                     </Typography>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleLogin}>
+                      
+                    
+
                       <TextField
                         label="Email address"
                         fullWidth
@@ -165,6 +164,7 @@ function Login() {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
+                        required
                       />
                       <TextField
                         label="Password"
@@ -176,6 +176,7 @@ function Login() {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
+                        required
                       />
                       <Grid container justifyContent="space-between" alignItems="center" className="mb-4">
                         <Grid item>
@@ -197,6 +198,7 @@ function Login() {
                         type="submit"
                         className="mb-4"
                         fullWidth
+                        
                       >
                         Sign in
                       </Button>

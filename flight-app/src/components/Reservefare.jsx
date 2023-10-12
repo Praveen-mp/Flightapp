@@ -14,9 +14,10 @@ import {
 import { Chair, Payment } from '@mui/icons-material';
 import Header from './Header';
 import Footer from './Footer';
-import './styles/Reservefare.css'
+import './styles/Reservefare.css' 
 // import { useDispatch, useSelector } from 'react-redux';
 // import { updateUserProfile } from '../redux/UserProfileSlice';
+import axios from 'axios';
 function FlightBookingApp() {
   const [passengerDetails, setPassengerDetails] = useState({
     name: '',
@@ -74,31 +75,55 @@ function FlightBookingApp() {
     // Calculate total fare
     return sumAllfare; // Replace with actual calculation
   };
-   
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
     const totalFare = calculateTotalFare();
-
-    // In a real application, you would typically handle payment processing here
-    // You can integrate with payment gateways like Stripe, PayPal, etc.
-    // For this example, we'll just display the total fare.
-    // dispatch(updateUserProfile(passengerDetails));
     localStorage.setItem('userProfile', JSON.stringify(passengerDetails));
+    localStorage.setItem('userEmail',passengerDetails.email);
     alert(`Total Fare: $${totalFare}`);
-    // alert(`Details are storedInLocal:`);
+
+    const data = {
+      userName: passengerDetails.name,
+      userEmail: passengerDetails.email,
+      userAge: passengerDetails.age,
+      ticketType:ticketType,
+      mealsOption:meal,
+      wheelChair:chair,
+      totalFare:totalFare
+    };
+    
+  
+   console.log(data);
+    try {
+      // Send a POST request to your backend endpoint
+      const response = await axios.post('http://localhost:8080/fare/add', data);
+
+      // Handle the response as needed (e.g., show a success message)
+      console.log('Fare data saved successfully:', response.data);
+      window.location.href=`/profile/${passengerDetails.email}`;
+      // In a real application, you can handle success and error cases more thoroughly
+    } catch (error) {
+      // Handle any errors that occur during the request (e.g., show an error message)
+      console.error('Error while saving fare data:', error);
+
+      // In a real application, you can provide feedback to the user about the error
+    }    
+
+
   };
 
 
   // Show the userDetails
 
-  useEffect(() => {
-    // Retrieve data from local storage when the component mounts
-    const storedName = localStorage.getItem('name');
-    const storedEmail = localStorage.getItem('email');
-    console.log(storedName+" "+storedEmail);
-    // If data exists in local storage, set it in the component state
+  // useEffect(() => {
+  //   // Retrieve data from local storage when the component mounts
+  //   const storedName = localStorage.getItem('name');
+  //   const storedEmail = localStorage.getItem('email');
+  //   console.log(storedName+" "+storedEmail);
+  //   // If data exists in local storage, set it in the component state
     
-  }, []);
+  // }, []);
 
   return (
     <div  className="res-fare">
@@ -201,7 +226,7 @@ function FlightBookingApp() {
                
               </Grid>
             </form>
-            <Button variant='contained' style={{backgroundColor:'red',marginTop:'10px'}} onClick={()=>window.location.href="/reservefare/billing"}>Book now</Button>
+            <Button onClick={handleSubmit} variant='contained' style={{backgroundColor:'red',marginTop:'10px'}} >Book now</Button>
             <Typography variant="h5" style={{ marginTop: '20px' }}>
               Total Fare: ${calculateTotalFare()}
             </Typography>

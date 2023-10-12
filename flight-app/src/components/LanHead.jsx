@@ -91,6 +91,11 @@ function LanHead() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  
+  const handleLogout=()=>{
+    localStorage.removeItem('token');
+    window.location.href="/";
+}
 
   return (
     <div className={classes.root}>
@@ -130,6 +135,9 @@ function LanHead() {
             <Button className={classes.button} onClick={()=>window.location.href="/login"}>
               Log in
             </Button>
+            <Button className={classes.button} onClick={handleLogout}>
+              Logout
+            </Button>
           </div>
           {mobileOpen && (
             <>
@@ -160,6 +168,7 @@ function LanHead() {
                   </MenuItem>
                 ))}
                 <MenuItem onClick={()=>window.location.href="/login"}>Log in</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
             </>
           )}
